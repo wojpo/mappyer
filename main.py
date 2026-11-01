@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from resolver import resolve_import
 from scanner import get_filtered_from_dir
 from parser import get_imports
@@ -14,7 +13,6 @@ def unique_module_id(p: Path, f: Path):
 
 if __name__ == "__main__":
     folder = Path(".")
-
 
     all_paths = get_filtered_from_dir(folder)
 

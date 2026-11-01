@@ -7,13 +7,13 @@ def get_imports(p: Path):
     try:
         tree = ast.parse(p.read_text(encoding="utf-8"))
     except SyntaxError:
-        sys.stderr(f"Syntax error in file {p}")
+        sys.stderr.write(f"Syntax error in file {p}")
         return []
     except OSError:
-        sys.stderr(f"Unreadable file {p}")
+        sys.stderr.write(f"Unreadable file {p}")
         return []
     except UnicodeDecodeError:
-        sys.stderr(f"Unicode decode error {p}")
+        sys.stderr.write(f"Unicode decode error {p}")
         return []
     imports = []
 
