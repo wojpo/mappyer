@@ -1,9 +1,20 @@
 import ast
+import sys
 from pathlib import Path
 
 
 def get_imports(p: Path):
-    tree = ast.parse(p.read_text(encoding="utf-8"))
+    try:
+        tree = ast.parse(p.read_text(encoding="utf-8"))
+    except SyntaxError:
+        sys.stderr(f"Syntax error in file {p}")
+        return []
+    except OSError:
+        sys.stderr(f"Unreadable file {p}")
+        return []
+    except UnicodeDecodeError:
+        sys.stderr(f"Unicode decode error {p}")
+        return []
     imports = []
 
     for node in ast.walk(tree):

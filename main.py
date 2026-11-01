@@ -1,5 +1,7 @@
 from pathlib import Path
-from scanner import get_from_dir
+
+from resolver import resolve_import
+from scanner import get_filtered_from_dir
 from parser import get_imports
 import graphviz
 
@@ -13,21 +15,31 @@ def unique_module_id(p: Path, f: Path):
 if __name__ == "__main__":
     folder = Path(".")
 
-    all_paths = [i for i in get_from_dir(folder) if str(i)[0] != '.']
 
+    all_paths = get_filtered_from_dir(folder)
+
+    modules_to_files = {}
     dependencies = {}
 
     for path in all_paths:
-        dependencies[unique_module_id(path, folder)] = get_imports(path)
+        uniq = unique_module_id(path, folder)
+        modules_to_files[uniq] = path
+        dependencies[uniq] = get_imports(path)
 
     dot = graphviz.Digraph()
 
-    for i in dependencies.keys():
-        dot.node(i)
-        for j in dependencies[i]:
-            dot.node(str(j['module']))
-            print(i, j)
-            dot.edge(i, str(j['module']))
+    for source, imports in dependencies.items():
+        dot.node(source)
 
+        for imp in imports:
+            resolved = resolve_import(
+                source,
+                imp,
+                modules_to_files
+            )
+
+            for target in resolved:
+                dot.node(target)
+                dot.edge(source, target)
 
     dot.render()
