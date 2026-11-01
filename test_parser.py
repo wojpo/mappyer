@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from parser import get_imports
 
 def test_simple_import(tmp_path):
