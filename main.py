@@ -3,6 +3,13 @@ from scanner import get_from_dir
 from parser import get_imports
 import graphviz
 
+
+def unique_module_id(p: Path, f: Path):
+    p = p.relative_to(f).with_suffix('').parts
+    if p[-1] == '__init__':
+        return '.'.join(p[:-1])
+    return '.'.join(p)
+
 if __name__ == "__main__":
     folder = Path(".")
 
@@ -11,7 +18,7 @@ if __name__ == "__main__":
     dependencies = {}
 
     for path in all_paths:
-        dependencies[path.name] = get_imports(path)
+        dependencies[unique_module_id(path, folder)] = get_imports(path)
 
     dot = graphviz.Digraph()
 
