@@ -2,7 +2,7 @@ from pathlib import Path
 from resolver import resolve_import
 from scanner import get_filtered_from_dir
 from parser import get_imports
-import graphviz
+from visualizer import visualize
 
 
 def unique_module_id(p: Path, f: Path):
@@ -24,10 +24,9 @@ if __name__ == "__main__":
         modules_to_files[uniq] = path
         dependencies[uniq] = get_imports(path)
 
-    dot = graphviz.Digraph()
+    edges = set()
 
     for source, imports in dependencies.items():
-        dot.node(source)
 
         for imp in imports:
             resolved = resolve_import(
@@ -37,7 +36,6 @@ if __name__ == "__main__":
             )
 
             for target in resolved:
-                dot.node(target)
-                dot.edge(source, target)
+                edges.add((source, target))
 
-    dot.render()
+    visualize(modules_to_files, edges)
