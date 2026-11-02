@@ -1,9 +1,9 @@
 import argparse
 from pathlib import Path
-from resolver import resolve_import
-from scanner import get_filtered_from_dir
-from parser import get_imports
-from visualizer import visualize
+from .resolver import resolve_import
+from .scanner import get_filtered_from_dir
+from .parser import get_imports
+from .visualizer import visualize
 
 
 def unique_module_id(p: Path, f: Path):
@@ -12,7 +12,7 @@ def unique_module_id(p: Path, f: Path):
         return '.'.join(p[:-1])
     return '.'.join(p)
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         prog='Mappyer',
         description='Python tool designed to analyze Python projects and visualize dependencies.')
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "directory",
         nargs="?",
-        default=Path("."),
+        default=Path("../.."),
         type=Path,
         help="Python project directory to analyze"
     )
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o",
         "--output",
-        default=Path("mappyer.html"),
+        default=Path("../../mappyer.html"),
         type=Path,
         help="Output HTML file path"
     )
@@ -45,8 +45,15 @@ if __name__ == "__main__":
     modules_to_files = {}
     dependencies = {}
 
+    src_root = folder / "src"
+
     for path in all_paths:
-        uniq = unique_module_id(path, folder)
+        if src_root.is_dir() and path.is_relative_to(src_root):
+            module_root = src_root
+        else:
+            module_root = folder
+
+        uniq = unique_module_id(path, module_root)
         modules_to_files[uniq] = path
         dependencies[uniq] = get_imports(path)
 
@@ -65,3 +72,6 @@ if __name__ == "__main__":
                 edges.add((source, target))
 
     visualize(modules_to_files, edges, args.output)
+
+if __name__ == "__main__":
+   main()

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mappyer"
+version = "0.1.0"
+description = "A Python dependency graph visualizer"
+requires-python = ">=3.10"
+dependencies = [
+    "pyvis>=0.3.2"
+]
+
+[project.scripts]
+mappyer = "mappyer.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,4 +1,4 @@
-from parser import get_imports
+from mappyer.parser import get_imports
 
 def test_simple_import(tmp_path):
     file = tmp_path / "example.py"

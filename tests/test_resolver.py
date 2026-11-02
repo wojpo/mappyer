@@ -1,12 +1,12 @@
 from pathlib import Path
 import pytest
 
-from resolver import resolve_import
+from mappyer.resolver import resolve_import
 
 @pytest.fixture
 def modules_to_files():
     return {
-        "main": Path("main.py"),
+        "main": Path("../src/mappyer/main.py"),
         "app": Path("app/__init__.py"),
         "app.utils": Path("app/utils.py"),
         "app.config": Path("app/config.py"),
