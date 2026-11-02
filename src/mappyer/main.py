@@ -20,7 +20,7 @@ def main():
     parser.add_argument(
         "directory",
         nargs="?",
-        default=Path("../.."),
+        default=Path("."),
         type=Path,
         help="Python project directory to analyze"
     )
@@ -28,7 +28,7 @@ def main():
     parser.add_argument(
         "-o",
         "--output",
-        default=Path("../../mappyer.html"),
+        default=Path("mappyer.html"),
         type=Path,
         help="Output HTML file path"
     )
