@@ -6,11 +6,16 @@ from .parser import get_imports
 from .visualizer import visualize
 
 
-def unique_module_id(p: Path, f: Path):
-    p = p.relative_to(f).with_suffix('').parts
-    if p[-1] == '__init__':
-        return '.'.join(p[:-1])
-    return '.'.join(p)
+def unique_module_id(path: Path, root: Path) -> str:
+    parts = list(path.relative_to(root).with_suffix("").parts)
+
+    if parts[-1] == "__init__":
+        parts.pop()
+
+    if (root / "__init__.py").is_file():
+        parts.insert(0, root.resolve().name)
+
+    return ".".join(parts)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -54,6 +59,13 @@ def main():
             module_root = folder
 
         uniq = unique_module_id(path, module_root)
+
+        if uniq in modules_to_files:
+            parser.error(
+                f"Duplicate module ID '{uniq}': "
+                f"{modules_to_files[uniq]} and {path}"
+            )
+
         modules_to_files[uniq] = path
         dependencies[uniq] = get_imports(path)
 
