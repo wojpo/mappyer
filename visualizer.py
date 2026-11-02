@@ -1,7 +1,7 @@
 from pyvis.network import Network
 
 
-def visualize(modules_to_files, edges):
+def visualize(modules_to_files, edges, output: str):
     net = Network(
         height="100vh",
         width="100%",
@@ -46,5 +46,5 @@ def visualize(modules_to_files, edges):
             width=1.5
         )
 
-    with open("mappyer.html", "w", encoding="utf-8") as file:
+    with open(output, "w", encoding="utf-8") as file:
         file.write(net.generate_html())

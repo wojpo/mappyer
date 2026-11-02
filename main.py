@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 from resolver import resolve_import
 from scanner import get_filtered_from_dir
@@ -12,7 +13,32 @@ def unique_module_id(p: Path, f: Path):
     return '.'.join(p)
 
 if __name__ == "__main__":
-    folder = Path(".")
+    parser = argparse.ArgumentParser(
+        prog='Mappyer',
+        description='Python tool designed to analyze Python projects and visualize dependencies.')
+
+    parser.add_argument(
+        "directory",
+        nargs="?",
+        default=Path("."),
+        type=Path,
+        help="Python project directory to analyze"
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        default=Path("mappyer.html"),
+        type=Path,
+        help="Output HTML file path"
+    )
+
+    args = parser.parse_args()
+
+    folder = Path(args.directory)
+
+    if not folder.is_dir():
+        parser.error(f"Invalid directory: {folder}")
 
     all_paths = get_filtered_from_dir(folder)
 
@@ -38,4 +64,4 @@ if __name__ == "__main__":
             for target in resolved:
                 edges.add((source, target))
 
-    visualize(modules_to_files, edges)
+    visualize(modules_to_files, edges, args.output)
